@@ -1,6 +1,22 @@
 <script>
-    document.getElementById("execute").addEventListener("click", () => {
-        const url = "https://tinyurl.com/2bnxwcl9";
-        window.location.href = url;
+    document.getElementById("execute").addEventListener("click", async () => {
+        const originalUrl = "https://tinyurl.com/2bnxwcl9";
+        const corsProxyUrl = `https://cors-anywhere.herokuapp.com/${originalUrl}`; // Agregamos el proxy
+        const output = document.getElementById("output");
+        
+        output.innerText = "Loading...";
+
+        try {
+            const response = await fetch(corsProxyUrl, {
+                method: 'GET',
+                headers: {
+                    'Origin': window.location.origin
+                }
+            });
+            const data = await response.text();
+            output.innerText = `Response: ${data}`;
+        } catch (error) {
+            output.innerText = `Error: ${error.message}`;
+        }
     });
 </script>
