@@ -1,32 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trigger URL Example</title>
-</head>
-<body>
-    <h1>Trigger URL Execution</h1>
-    <button id="execute">Execute URL</button>
-    <p id="output">Response will appear here.</p>
-
-    <script>
-        // Asignar evento al botón
-        document.getElementById("execute").addEventListener("click", async () => {
-            const url = "https://tinyurl.com/2bnxwcl9"; // URL a ejecutar
-            const output = document.getElementById("output"); // Elemento para mostrar la respuesta
-            
-            output.innerText = "Loading..."; // Mostrar mensaje mientras se procesa
-
-            try {
-                const response = await fetch(url); // Ejecutar la URL
-                const data = await response.text(); // Obtener el texto de la respuesta
-                output.innerText = `Response: ${data}`; // Mostrar la respuesta en la página
-            } catch (error) {
-                // Manejar errores
-                output.innerText = `Error: ${error.message}`;
-            }
-        });
-    </script>
-</body>
-</html>
+<script>
+    document.getElementById("execute").addEventListener("click", () => {
+        const url = "https://tinyurl.com/2bnxwcl9";
+        window.location.href = url;
+    });
+</script>
