@@ -11,7 +11,9 @@
     <script>
         async function obtenerDatos() {
             try {
-                const response = await fetch('https://tinyurl.com/2bnxwcl9');
+                const response = await fetch('https://tinyurl.com/2bnxwcl9', {
+                    mode: 'no-cors'
+                });
                 const data = await response.text();
                 document.getElementById('contenido').innerHTML = data;
             } catch (error) {
@@ -20,7 +22,6 @@
             }
         }
 
-        // Llamar a la función cuando se carga la página
         obtenerDatos();
     </script>
 </body>
