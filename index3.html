@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud GET con Proxy</title>
+</head>
+<body>
+    <div id="contenido"></div>
+
+    <script>
+        async function obtenerDatos() {
+            try {
+                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                const targetUrl = 'https://tinyurl.com/2bnxwcl9';
+                
+                const response = await fetch(proxyUrl + targetUrl);
+                const data = await response.text();
+                document.getElementById('contenido').innerHTML = data;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('contenido').innerHTML = 'Error al cargar los datos';
+            }
+        }
+
+        obtenerDatos();
+    </script>
+</body>
+</html>
