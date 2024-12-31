@@ -13,30 +13,20 @@
     <script>
         document.getElementById("execute").addEventListener("click", async () => {
             const originalUrl = "https://tinyurl.com/2bnxwcl9";
-            const corsProxyUrl = `https://cors-anywhere.herokuapp.com/${originalUrl}`;
+            const corsProxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(originalUrl)}`;
             const output = document.getElementById("output");
             
             output.innerText = "Loading...";
 
             try {
-                // Primero necesitas solicitar acceso a cors-anywhere
-                // Visita https://cors-anywhere.herokuapp.com/corsdemo para activar el acceso temporal
-                const response = await fetch(corsProxyUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Origin': window.location.origin
-                    }
-                });
-                
+                const response = await fetch(corsProxyUrl);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
-                const data = await response.text();
-                console.log("Response data:", data); // Para debug
-                output.innerText = `Response: ${data}`;
+                const data = await response.json();
+                output.innerText = `Response: ${data.contents}`;
             } catch (error) {
-                console.error("Error:", error); // Para debug
+                console.error("Error:", error);
                 output.innerText = `Error: ${error.message}`;
             }
         });
