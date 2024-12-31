@@ -1,22 +1,45 @@
-<script>
-    document.getElementById("execute").addEventListener("click", async () => {
-        const originalUrl = "https://tinyurl.com/2bnxwcl9";
-        const corsProxyUrl = `https://cors-anywhere.herokuapp.com/${originalUrl}`; // Agregamos el proxy
-        const output = document.getElementById("output");
-        
-        output.innerText = "Loading...";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigger URL Example</title>
+</head>
+<body>
+    <h1>Trigger URL Execution</h1>
+    <button id="execute">Execute URL</button>
+    <p id="output">Response will appear here.</p>
 
-        try {
-            const response = await fetch(corsProxyUrl, {
-                method: 'GET',
-                headers: {
-                    'Origin': window.location.origin
+    <script>
+        document.getElementById("execute").addEventListener("click", async () => {
+            const originalUrl = "https://tinyurl.com/2bnxwcl9";
+            const corsProxyUrl = `https://cors-anywhere.herokuapp.com/${originalUrl}`;
+            const output = document.getElementById("output");
+            
+            output.innerText = "Loading...";
+
+            try {
+                // Primero necesitas solicitar acceso a cors-anywhere
+                // Visita https://cors-anywhere.herokuapp.com/corsdemo para activar el acceso temporal
+                const response = await fetch(corsProxyUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Origin': window.location.origin
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            });
-            const data = await response.text();
-            output.innerText = `Response: ${data}`;
-        } catch (error) {
-            output.innerText = `Error: ${error.message}`;
-        }
-    });
-</script>
+                
+                const data = await response.text();
+                console.log("Response data:", data); // Para debug
+                output.innerText = `Response: ${data}`;
+            } catch (error) {
+                console.error("Error:", error); // Para debug
+                output.innerText = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
