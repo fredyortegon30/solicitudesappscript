@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitud GET con Proxy</title>
+    <title>Solicitud GET</title>
 </head>
 <body>
     <div id="contenido"></div>
@@ -11,8 +11,9 @@
     <script>
         async function obtenerDatos() {
             try {
-                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-                const targetUrl = 'https://tinyurl.com/2bnxwcl9';
+                // Usando allorigins como proxy alternativo
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const targetUrl = encodeURIComponent('https://tinyurl.com/2bnxwcl9');
                 
                 const response = await fetch(proxyUrl + targetUrl);
                 const data = await response.text();
