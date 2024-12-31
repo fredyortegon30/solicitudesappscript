@@ -1,87 +1,63 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cancelación de Cita</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <title>Trigger URL Example</title>
     <style>
-        body {
-            padding: 20px;
-        }
         .response-container {
-            margin-top: 20px;
+            margin: 20px;
             padding: 20px;
+            border: 1px solid #ddd;
             border-radius: 5px;
+        }
+        .error-message {
+            color: red;
+        }
+        .success-message {
+            color: green;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="mb-4">Cancelación de Cita</h1>
-        <div class="row">
-            <div class="col-md-6">
-                <form id="cancelForm">
-                    <div class="mb-3">
-                        <label for="eventId" class="form-label">ID del Evento</label>
-                        <input type="text" class="form-control" id="eventId" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="calendarId" class="form-label">ID del Calendario</label>
-                        <input type="text" class="form-control" id="calendarId" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="numero" class="form-label">Número de Teléfono</label>
-                        <input type="text" class="form-control" id="numero" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="motivo" class="form-label">Motivo de Cancelación</label>
-                        <textarea class="form-control" id="motivo"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Cancelar Cita</button>
-                </form>
-            </div>
-            <div class="col-md-6">
-                <div id="output" class="response-container"></div>
-            </div>
-        </div>
-    </div>
+    <h1>Trigger URL Execution</h1>
+    <button id="execute">Execute URL</button>
+    <div id="output" class="response-container">Response will appear here.</div>
 
     <script>
-        document.getElementById('cancelForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        document.getElementById("execute").addEventListener("click", async () => {
+            const originalUrl = "https://tinyurl.com/2bnxwcl9";
+            const corsProxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(originalUrl)}`;
+            const output = document.getElementById("output");
             
-            const eventId = document.getElementById('eventId').value;
-            const calendarId = document.getElementById('calendarId').value;
-            const numero = document.getElementById('numero').value;
-            const motivo = document.getElementById('motivo').value;
-            
-            const output = document.getElementById('output');
-            output.innerHTML = '<div class="alert alert-info">Procesando solicitud...</div>';
-
-            // Construir la URL con los parámetros
-            const baseUrl = 'https://script.google.com/macros/s/AKfycbxpxDG4tcvd2riAyOr6rJQh-ZqdHKw6h3bR9N1lufJrIq_pv2PRqJw3bpQOYb1Msio/exec';
-            const url = `${baseUrl}?eventId=${encodeURIComponent(eventId)}&calendarId=${encodeURIComponent(calendarId)}&numero=${encodeURIComponent(numero)}&motivo=${encodeURIComponent(motivo)}`;
+            output.innerText = "Loading...";
 
             try {
-                // Hacer la solicitud usando IFRAME para evitar problemas de CORS
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = url;
-                document.body.appendChild(iframe);
-
-                // Mostrar mensaje de éxito
-                output.innerHTML = `
-                    <div class="alert alert-success">
-                        <h4>Solicitud enviada</h4>
-                        <p>La solicitud de cancelación ha sido enviada. Por favor, revisa la nueva ventana/pestaña para ver el resultado.</p>
-                    </div>`;
+                const response = await fetch(corsProxyUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                // Crear un parser DOM temporal
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data.contents, 'text/html');
+                
+                // Intentar encontrar el mensaje importante
+                const leadMessage = doc.querySelector('.lead')?.textContent;
+                const titleMessage = doc.querySelector('.display-4')?.textContent;
+                
+                if (leadMessage || titleMessage) {
+                    output.innerHTML = `
+                        <h3>${titleMessage || ''}</h3>
+                        <p>${leadMessage || ''}</p>
+                    `;
+                } else {
+                    output.innerText = 'No se pudo extraer el mensaje de la respuesta';
+                }
             } catch (error) {
-                output.innerHTML = `
-                    <div class="alert alert-danger">
-                        <h4>Error</h4>
-                        <p>${error.message}</p>
-                    </div>`;
+                console.error("Error:", error);
+                output.innerHTML = `<span class="error-message">Error: ${error.message}</span>`;
             }
         });
     </script>
